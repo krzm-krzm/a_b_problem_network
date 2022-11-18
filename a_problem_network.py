@@ -150,7 +150,7 @@ def network_creat(Time_expand, kakucho):
                             next_early_time = e[i + 1]
                             next_late_time = l[i + 1]
                             connect_abs = l[a] - next_late_time
-                            if abs(connect_abs) <= Setting_Info_base[9]:
+                            if abs(connect_abs) <= Setting_Info_base[4]:
                                 next_add_node = range(next_early_time, next_late_time)
                                 for k in next_add_node:
                                     if k > j:
@@ -310,8 +310,8 @@ def return_kakuritsu(dic, now_location, capacity, picking_list):
     idou_kanou = []
     idou_kanou_time = []
     idou_kakuritsu = []
-    next_limit = Setting_Info_base[9]
-    capa_max = Setting_Info_base[4]
+    next_limit = Setting_Info_base[4]
+    capa_max = Setting_Info_base[3]
     saitan_drop_node = (n, T + 1)
     random_return = (0, 0)
     if capacity < capa_max:
@@ -533,7 +533,7 @@ def capacity_route_k(route_k):
     q = 0
     for i in range(len(route_k)):
         q = q + noriori[route_k[i]]
-        if q > Setting_Info_base[4]:
+        if q > Setting_Info_base[3]:
             capacity_over += 1
     return capacity_over
 
@@ -599,7 +599,7 @@ def ride_time_penalty(L):  # 論文でのt_s
     '''
     sum = 0
     for i in range(len(L)):
-        a = L[i] - Setting_Info_base[9]
+        a = L[i] - Setting_Info_base[4]
         if a > 0:
             sum = sum + a
     return sum
@@ -622,7 +622,7 @@ def penalty_sum_route_k(route_k):
         q_s = capacity_route_k(route_k)
         ROUTE_TIME_info = time_caluculation(route_k)
         d_s_s = (ROUTE_TIME_info[1][-1] - ROUTE_TIME_info[1][route_k[1]] + Distance[0][route_k[1]]) - \
-                Setting_Info_base[8]
+                Setting_Info_base[2]
         if d_s_s < 0:
             d_s_s = 0
         d_s = d_s + d_s_s
@@ -784,7 +784,7 @@ def penalty_sum(route):
             c_s+=route_k_cost_sum(route[i])
             q_s+=capacity_route_k(route[i])
             ROUTE_TIME_info = time_caluculation(route[i])
-            d_s_s = (ROUTE_TIME_info[1][-1]-ROUTE_TIME_info[1][route[i][1]] +Distance[0][route[i][1]])- Setting_Info_base[8]
+            d_s_s = (ROUTE_TIME_info[1][-1]-ROUTE_TIME_info[1][route[i][1]] +Distance[0][route[i][1]])- Setting_Info_base[2]
             if d_s_s < 0:
                 d_s_s = 0
             d_s = d_s + d_s_s
@@ -1057,21 +1057,21 @@ if __name__ == '__main__':
     Setting_Info = Setting(FILENAME)
     Setting_Info_base = Setting_Info[0]  # ベンチマーク問題の１行目（設定情報）を抜き出した変数
     Syaryo = int(Setting_Info_base[0])  # 車両数
-    Syaryo_max_time = Setting_Info_base[8]  # 車両の最大稼働時間
-    T = int(Setting_Info_base[5])  # 時間数
+    Syaryo_max_time = Setting_Info_base[2]  # 車両の最大稼働時間
+    T = int(Setting_Info_base[2])  # 時間数
     n = int(Setting_Info[1]) + 1  # デポを含めた頂点数
     Request = int((n - 1) / 2)  # リクエスト数
     Distance = Setting_Info[3]  # 距離
     e = Setting_Info[4]  # early time
     l = Setting_Info[5]  # delay time
-    d = 5  # 乗り降りにようする時間
+    d = 3  # 乗り降りにようする時間
     noriori = Setting_Info[6]  # 乗り降り0-1決定変数
     kokyaku_node = range(1, n)
 
     time_expand = 1
 
     FILENAME = FILENAME.replace('.txt', '')
-    G = nx.read_gpickle('time_network2' + FILENAME)
+    G = nx.read_gpickle('time_network' + FILENAME)
 
     G_copy = copy.deepcopy(G)
     # ----------------------パラメータ-------------------------------------
@@ -1096,7 +1096,7 @@ if __name__ == '__main__':
     opt_loot = []
     opt_info = []
 
-    LOOP = 3
+    LOOP = 1
     M_loop =1000
     data = np.zeros((LOOP, 3))
 
